@@ -1,3 +1,9 @@
+#
+# lanscan  -- implements an IP LAN host discovery REST API service
+#
+# Written by Glen Darling (mosquito@darlingevil.com), December 2022.
+#
+
 import multiprocessing
 import queue
 import time
