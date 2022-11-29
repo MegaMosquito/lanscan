@@ -131,7 +131,7 @@ if __name__ == '__main__':
   while True:
 
     debug('Fill (or refill) the input queue with the target octets (1..254)...')
-    for i in range(1, 254):
+    for i in range(1, 255):
       input.put(i)
 
     # Note the time before process creation begins
