@@ -13,7 +13,7 @@ To check what values will be actually used by `make`, run `make chkvars` (this w
 
 The `Makefie`-computed values include:
 
-- **MY_SUBNET_CIDR** (the network `CIDR` you wish to scan -- see "Notes" below for more info), and/or
+- **MY_SUBNET_CIDR** (network `CIDR` to scan, e.g., "192.168.1.0/24"), and/or
 - **MY_HOST_IPV4** this scanning host's IPV4 address (in dotted decimal), and/or
 - **MY_HOST_MAC** this scanning host's MAC address (in colon-separated hex)
 
@@ -21,7 +21,7 @@ Why are the host IPv4 address and MAC address being specified here (computed or 
 
 Other values you may choose to override include the base URL for the REST service (**MY_REST_API_BASE_URL**), and/or the host port that the REST servcie binds to (**MY_REST_API_PORT**).
 
-For performance tuning, you may want to override the number of Python `multiprocessing`-module processes the code will spawn (**MY_NUM_PROCESSES**). Otherwise my default values will be used. In general more processes is better for faster convergence to discovery of the full set of MACs on your LAN, but there are tradeoffs. Processes take longer than threads to spawn at the start of the program and each process uses memory and creates CPU load on the host. In my home I run this on a Raspberry Pi 4, running the Desktop Raspberry Pi OS release 10 (based on debian buster). I use the default of **40 processes** and the code takes about 19 seconds to complete a snapshot scanning all 253 IP addresses in my "/24" LAN which typically has about 100 hosts online. With 20 processes scans take about 36 seconds. With 51 processes, scans take about 16 seconds. You may wish to experiment with different numbers of processes to tune things for your environment.
+For performance tuning, you may want to override the number of Python `multiprocessing`-module processes the code will spawn (**MY_NUM_PROCESSES**). Otherwise my default values will be used. In general more processes is better for faster convergence to discovery of the full set of MACs on your LAN, but there are tradeoffs. Processes take longer than threads to spawn at the start of the program and each process uses memory and creates CPU load on the host. In my home I run this on a Raspberry Pi 4, running the Desktop Raspberry Pi OS release 10 (based on debian buster). I use the default of **40 processes** and the code takes about 19 seconds to complete a snapshot scanning all 253 IP addresses in my "/24" LAN which typically has about 100 hosts online. With 20 processes, scans take about 36 seconds. With 51 processes, scans take about 16 seconds. You may wish to experiment with different numbers of processes to tune things for your environment.
 
 ## Starting the REST Service:
 
@@ -62,7 +62,7 @@ pi@netmon:~/git/scanner $ make test | jq .
       "ipv4": "192.168.123.1",
       "mac": "3c:37:86:5e:ec:37"
     },
-    ...
+    ... more of your hosts listed here ...
   ]
 }
 ```
