@@ -91,11 +91,12 @@ def get_cache ():
 
 # Global status
 last_scan_UTC = '(just starting up)'
+last_scan_time_sec = "0.0"
 last_scan_host_count = 0
 
 # Return status info
 def get_status ():
-  return '{"status":{' + '"last_utc":"' + last_scan_UTC + '",' + '"last_count":' + str(last_scan_host_count) + '}}\n'
+  return '{"status":{"last_utc":"' + last_scan_UTC + '","last_time_sec":' + last_scan_time_sec + ',"last_count":' + str(last_scan_host_count) + '}}\n'
 
 # GET: (base URL)/json
 @restapi.route(REST_API_BASE_URL + '/json', methods=['GET'])
@@ -177,6 +178,7 @@ if __name__ == '__main__':
 
     # Update globals for the status API
     last_scan_UTC = utc_now
+    last_scan_time_sec = ('%0.4f' % times[2])
     last_scan_host_count = c
 
     # Refrash the cache with this JSON
