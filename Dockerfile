@@ -16,7 +16,7 @@
 # respond to ARP requests simply cannot receive IP traffic at all. So I
 # believe all hosts on the LAN will be discovered with this approach.
 #
-# Written by Glen Darling (mosquito@darlingevil.com), December 2022.
+# Written by Glen Darling (mosquito@darlingevil.com), November 2022.
 #
 FROM ubuntu:latest
 
@@ -31,7 +31,7 @@ WORKDIR /lanscan
 # Install convenience tools (may omit these in production)
 # RUN apt install -y curl jq
 
-# Copy over the netmon files
+# Copy over the lanscan source file
 COPY ./lanscan.py /lanscan
 
 # Start up the daemon process
