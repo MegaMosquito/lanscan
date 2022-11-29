@@ -27,6 +27,15 @@ MY_NUM_PROCESSES      ?= 40
 # Running `make` with no target builds and runs this as a restarting daemon
 default: build run
 
+# Check the values of the "MY_" variables
+chkvars:
+	@echo "MY_SUBNET_CIDR:      = \"$(MY_SUBNET_CIDR)\""
+	@echo "MY_HOST_IPV4:        = \"$(MY_HOST_IPV4)\""
+	@echo "MY_HOST_MAC:         = \"$(MY_HOST_MAC)\""
+	@echo "MY_REST_API_BASE_URL = \"$(MY_REST_API_BASE_URL)\""
+	@echo "MY_REST_API_PORT     = \"$(MY_REST_API_PORT)\""
+	@echo "MY_NUM_PROCESSES     = \"$(MY_NUM_PROCESSES)\""
+
 # Build the container and tag it
 build:
 	docker build -t $(DOCKERHUB_ID)/$(NAME):$(VERSION) .
