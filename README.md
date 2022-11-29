@@ -74,8 +74,9 @@ A basic `/status` API that also returns JSON. Just append `/status` to the base 
 ```
 {
   "status": {
-    "last_utc": "2022-11-29T01:22:38.328687+00:00",
-    "last_count": 69
+    "last_utc": "2022-11-29T01:41:04.735145+00:00",
+    "last_time_sec": 19.3626,
+    "last_count": 94
   }
 }
 ```
