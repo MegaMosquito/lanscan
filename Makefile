@@ -1,7 +1,7 @@
 #
 # lanscan  -- implements an IP LAN host discovery REST API service
 #
-# Written by Glen Darling (mosquito@darlingevil.com), December 2022.
+# Written by Glen Darling (mosquito@darlingevil.com), November 2022.
 #
 
 NAME         := lanscan
