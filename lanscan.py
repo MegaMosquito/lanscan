@@ -97,8 +97,8 @@ last_scan_host_count = 0
 def get_status ():
   return '{"status":{' + '"last_utc":"' + last_scan_UTC + '",' + '"last_count":' + str(last_scan_host_count) + '}}\n'
 
-# GET: (base URL)
-@restapi.route(REST_API_BASE_URL, methods=['GET'])
+# GET: (base URL)/json
+@restapi.route(REST_API_BASE_URL + '/json', methods=['GET'])
 def base_api ():
   return get_cache()
 

@@ -69,6 +69,17 @@ pi@netmon:~/git/scanner $ make test | jq .
 
 These `make` targets just use `curl` to connect to the REST API provided by this service. Look at the Makefile to see how the `test` target implements this (just a single `curl` command). Essentially just append "json" to the BASE_URL when you connect to the REST API port.
 
+A basic `/status` API that also returns JSON. Just append `/status` to the base URL as above to get output similar to this:
+
+```
+{
+  "status": {
+    "last_utc": "2022-11-29T01:22:38.328687+00:00",
+    "last_count": 69
+  }
+}
+```
+
 ## Some notes on my methodology
 
 This code is intended to replace previous work I have done using `nmap`

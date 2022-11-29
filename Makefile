@@ -63,7 +63,7 @@ run: stop
 # Test the service by retrieving a JSON snapshot
 # You may wish to pipe this to `jq`, e.g., `make test | jq .`
 test:
-	@curl -s localhost:8003/lanscan
+	@curl -s localhost:$(MY_REST_API_PORT)/$(MY_REST_API_BASE_URL)/json
 
 # Enter the context of the daemon container
 exec:
