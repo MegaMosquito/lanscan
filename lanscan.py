@@ -17,6 +17,8 @@ from flask import Flask
 from flask import send_file
 from waitress import serve
 
+TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
 # Basic debug printing
 DEBUG = False
 def debug (s):
@@ -162,7 +164,7 @@ if __name__ == '__main__':
       _end - _start)
 
     # Construct the JSON results (adding in the host IPv4 and MAC info)
-    utc_now = datetime.now(timezone.utc).isoformat()
+    utc_now = datetime.now(timezone.utc).strftime(TIME_FORMAT)
     debug('This pass took took {0} seconds.'.format(times[2]))
     temp = '{"time":{'
     temp += '"utc":"' + utc_now + '",'
