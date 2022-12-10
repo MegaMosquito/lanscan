@@ -99,12 +99,13 @@ def get_cache ():
 
 # Global status
 last_scan_UTC = '(just starting up)'
-last_scan_time_sec = "0.0"
+last_scan_total_sec = "0.0"
 last_scan_host_count = 0
+last_scan_html = '<p>(just starting up)</p>'
 
 # Return status info
 def get_status ():
-  return '{"status":{"last_utc":"' + last_scan_UTC + '","last_time_sec":' + last_scan_time_sec + ',"last_count":' + str(last_scan_host_count) + '}}\n'
+  return '{"status":{"last_utc":"' + last_scan_UTC + '","last_time_sec":' + last_scan_total_sec + ',"last_count":' + str(last_scan_host_count) + '}}\n'
 
 # GET: (base URL)/json
 @restapi.route(REST_API_BASE_URL + '/json', methods=['GET'])
@@ -115,6 +116,28 @@ def base_api ():
 @restapi.route(REST_API_BASE_URL + '/status', methods=['GET'])
 def status_api ():
   return get_status()
+
+# GET: /
+@restapi.route('/', methods=['GET'])
+def web_page ():
+  page = \
+    '<html>\n' + \
+    '  <head>\n' + \
+    '    <title>DarlingEvil LAN Scanner</title>\n' + \
+    '  </head>\n' + \
+    '  <body>\n' + \
+    '    <h2>DarlingEvil LAN Scanner</h2>\n' + \
+    last_scan_html + \
+    '  </body>\n' + \
+    '</html>\n'
+  return page
+
+def numeric_ip(k):
+  b = k.split('.')
+  return int(b[0]) << 24 + \
+         int(b[1]) << 16 + \
+         int(b[2]) << 8 + \
+         int(b[3])
 
 # Main program (to start the web server thread)
 if __name__ == '__main__':
@@ -157,40 +180,75 @@ if __name__ == '__main__':
     # Note the final end time
     _end = time.time()
 
-    # Compute the process phase timing
+    # Get the current UTC time too
+    utc_now = datetime.now(timezone.utc).strftime(TIME_FORMAT)
+
+    # Compute the phase timing
     times = (
       _wait - _start,
       _end - _wait,
       _end - _start)
-
-    # Construct the JSON results (adding in the host IPv4 and MAC info)
-    utc_now = datetime.now(timezone.utc).strftime(TIME_FORMAT)
     debug('This pass took took {0} seconds.'.format(times[2]))
-    temp = '{"time":{'
-    temp += '"utc":"' + utc_now + '",'
-    temp += ('"prep_sec":%0.4f' % times[0]) + ','
-    temp += ('"scan_sec":%0.4f' % times[1]) + ','
-    temp += ('"total_sec":%0.4f' % times[2]) + '},'
-    temp += '"scan":['
-    temp += '{"ipv4":"' + MY_HOST_IPV4 + '","mac":"' + MY_HOST_MAC + '"}'
-    c = 1
+
+    # Collect, count and sort the results from the output queue
+    results = {}
     while not output.empty():
       try:
-        out = output.get_nowait()
-        debug(out)
-        temp += ',' + out.strip()
-        c += 1
+        out = output.get_nowait().strip()
+        #debug(out)
+        j = json.loads(out)
+        results[j['ipv4']] = out
       except queue.Empty:
         pass
-    temp += ']}'
+    # Add this host
+    results[MY_HOST_IPV4] = \
+      '{"ipv4":"' + MY_HOST_IPV4 + '","mac":"' + MY_HOST_MAC + '"}'
+    sorted_ips = sorted(results.keys(), key=lambda k: numeric_ip(k))
+    count = len(sorted_ips)
+
+    # Construct HTML and JSON results with IPv4 and MAC info
+    temp_h = \
+      '    <table>\n' + \
+      '      <tr>\n' + \
+      '        <th>IPv4</th>\n' + \
+      '        <th>MAC</th>\n' + \
+      '      </tr>\n'
+
+    # The timing info
+    temp_j = '{"time":{'
+    temp_j += '"utc":"' + utc_now + '",'
+    temp_j += ('"prep_sec":%0.4f' % times[0]) + ','
+    temp_j += ('"scan_sec":%0.4f' % times[1]) + ','
+    temp_j += ('"total_sec":%0.4f' % times[2])
+    temp_j += '},'
+
+    # The scan array
+    temp_j += '"scan":['
+    for ip_key in sorted_ips:
+      out = results[ip_key]
+      #debug(out)
+      temp_j += out + ','
+      j = json.loads(out)
+      temp_h += '      <tr><td>' + j['ipv4'] + '</td><td>' + j['mac'] + '</td></tr>\n'
+    # Strip trailing comma
+    temp_j = temp_j[:-1]
+    temp_j += '],'
+    temp_h += '    </table>\n'
+
+    # The count of hosts
+    temp_j += '"count":' + str(count)
+
+    # All done!
+    temp_j += '}'
 
     # Update globals for the status API
     last_scan_UTC = utc_now
-    last_scan_time_sec = ('%0.4f' % times[2])
-    last_scan_host_count = c
+    last_scan_total_sec = ('%0.4f' % times[2])
+    last_scan_host_count = count
 
-    # Refrash the cache with this JSON
-    cache = temp
+    # Refrash the JSON cache with this JSON, and HTML cache with this HTML
+    cache = temp_j
+    last_scan_html = temp_h
 
     # Highlight the end of this pass in the debug output
     debug('----------------------------------------------------')

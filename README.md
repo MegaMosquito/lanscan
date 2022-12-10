@@ -1,7 +1,6 @@
 # lanscan -- an IP LAN host discovery tool
 
-This code creates a Docker container that provides a basic REST service that
-returns a snapshot of all hosts currently found on an IP LAN. The results are
+This code creates a Docker container that provides basic HTMP and JSON REST API services that return snapshots of all hosts currently found on an IP LAN. The results are
 JSON-encoded and provide the UTC timestamp of the snapshot and a list of all
 hosts on the IP LAN (providing the LAN IP address and MAC address for each).
 
@@ -21,20 +20,42 @@ Why are the host IPv4 address and MAC address being specified here (computed or 
 
 Other values you may choose to override include the base URL for the REST service (**MY_REST_API_BASE_URL**), and/or the host port that the REST servcie binds to (**MY_REST_API_PORT**).
 
-For performance tuning, you may want to override the number of Python `multiprocessing`-module processes the code will spawn (**MY_NUM_PROCESSES**). Otherwise my default values will be used. In general more processes is better for faster convergence to discovery of the full set of MACs on your LAN, but there are tradeoffs. Processes take longer than threads to spawn at the start of the program and each process uses memory and creates CPU load on the host. In my home I run this on a Raspberry Pi 4, running the Desktop Raspberry Pi OS release 10 (based on debian buster). I use the default of **40 processes** and the code takes about 19 seconds to complete a snapshot scanning all 253 IP addresses in my "/24" LAN which typically has about 100 hosts online. With 20 processes, scans take about 36 seconds. With 51 processes, scans take about 16 seconds. You may wish to experiment with different numbers of processes to tune things for your environment.
+For performance tuning, you may want to override the number of Python `multiprocessing`-module processes the code will spawn (**MY_NUM_PROCESSES**). Otherwise my default values will be used. In general more processes is better for faster convergence to discovery of the full set of MACs on your LAN, but there are tradeoffs. Processes take longer than threads to spawn at the start of the program and each process uses memory and creates CPU load on the host. In my home I run this on a Raspberry Pi 3B+, running the 64-bit Raspberry Pi OS "lite" release 11 (based on debian bullseye). I use the default of **40 processes** and the code takes about 19 seconds to complete a snapshot scanning all 253 IP addresses in my "/24" LAN which typically has about 100 hosts online. With 20 processes, scans take about 36 seconds. With 51 processes, scans take about 16 seconds. You may wish to experiment with different numbers of processes to tune things for your environment.
 
-## Starting the REST Service:
+## Starting the service:
 
-To start up the REST service, you must first build the container then run it using the two steps below:
+To start up the service, cd into this directory and execute this command:
+
+```
+make
+```
+
+Or you can manually do the 2 steps that command does, to first build the container then run it, by using the two steps below:
 
 ```
 make build
 make run
 ```
 
-## Using the REST Service:
+## Using the HTML Service:
 
-Once the service is running, you may use this command to test it and get a list of all of the hosts (IP and MAC addresses) discovered on the LAN, encoded in JSON:
+Once the container is running, you can point your browser at this host to receiv basic HTML output, listing the IP addresses and MAC addresses of all hosts found on the LAN. It will look something like this:
+
+```
+DarlingEvil LAN Scanner
+IPv4	MAC
+192.168.123.1	3c:37:86:5e:ec:37
+192.168.123.2	14:59:c0:93:19:f1
+192.168.123.3	00:50:b6:13:d4:18
+192.168.123.4	c4:04:15:19:f6:15
+...
+```
+
+That is, just very basic/rudamentary unformatted HTML text output. You may wish to use my companion (https://github.com/MegaMosquito/monitor)[https://github.com/MegaMosquito/monitor] service that continuously calls the JSON REST API provided by this service and formats its results more nicely. You can edit the CSS of that service to customize its appearance.
+
+## Using the JSON REST API Service:
+
+Once the container is running, you may use this command to test it and get a list of all of the hosts (IP and MAC addresses) discovered on the LAN, encoded in JSON:
 
 ```
 make test
@@ -63,7 +84,8 @@ pi@netmon:~/git/scanner $ make test | jq .
       "mac": "3c:37:86:5e:ec:37"
     },
     ... more of your hosts listed here ...
-  ]
+  ],
+  "count": 93
 }
 ```
 

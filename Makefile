@@ -21,7 +21,7 @@ MY_SUBNET_CIDR        ?= $(LOCAL_SUBNET_CIDR)
 MY_HOST_IPV4          ?= $(LOCAL_IP_ADDRESS)
 MY_HOST_MAC           ?= $(LOCAL_MAC_ADDRESS)
 MY_REST_API_BASE_URL  ?= /$(NAME)
-MY_REST_API_PORT      ?= 8003# Note that --network=host so this is a host port!
+MY_REST_API_PORT      ?= 80# Note that --network=host so this is a host port!
 MY_NUM_PROCESSES      ?= 40
 
 # Running `make` with no target builds and runs this as a restarting daemon
