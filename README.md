@@ -51,7 +51,7 @@ IPv4	MAC
 ...
 ```
 
-That is, just very basic/rudamentary unformatted HTML text output. You may wish to use my companion (https://github.com/MegaMosquito/monitor)[https://github.com/MegaMosquito/monitor] service that continuously calls the JSON REST API provided by this service and formats its results more nicely. You can edit the CSS of that service to customize its appearance.
+That is, just very basic/rudamentary unformatted HTML text output. You may wish to use my companion [https://github.com/MegaMosquito/monitor](https://github.com/MegaMosquito/monitor) service that continuously calls the JSON REST API provided by this service and formats its results more nicely. You can edit the CSS of that service to customize its appearance.
 
 ## Using the JSON REST API Service:
 
