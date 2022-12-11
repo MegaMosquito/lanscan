@@ -132,6 +132,15 @@ def web_page ():
     '</html>\n'
   return page
 
+# Prevent caching on all requests
+@webapp.after_request
+def add_header(r):
+  r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+  r.headers["Pragma"] = "no-cache"
+  r.headers["Expires"] = "0"
+  r.headers['Cache-Control'] = 'public, max-age=0'
+  return r
+
 def numeric_ip(k):
   b = k.split('.')
   return int(b[0]) << 24 + \
