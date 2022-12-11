@@ -1,6 +1,6 @@
 # lanscan -- an IP LAN host discovery tool
 
-This code creates a Docker container that provides basic HTMP and JSON REST API services that return snapshots of all hosts currently found on an IP LAN. The results are
+This code creates a Docker container that provides basic HTTP and JSON REST API services that return snapshots of all hosts currently found on an IP LAN. The results are
 JSON-encoded and provide the UTC timestamp of the snapshot and a list of all
 hosts on the IP LAN (providing the LAN IP address and MAC address for each).
 
