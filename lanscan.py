@@ -34,7 +34,7 @@ def get_from_env(v, d):
 MY_SUBNET_CIDR       = get_from_env('MY_SUBNET_CIDR', '')
 MY_HOST_IPV4         = get_from_env('MY_HOST_IPV4', '')
 MY_HOST_MAC          = get_from_env('MY_HOST_MAC', '')
-MY_REST_API_BASE_URL = get_from_env('MY_REST_API_BASE_URL', '/lanscan')
+MY_REST_API_BASE_URL = get_from_env('MY_REST_API_BASE_URL', 'lanscan')
 MY_REST_API_PORT     = int(get_from_env('MY_REST_API_PORT', '8003'))
 MY_NUM_PROCESSES     = int(get_from_env('MY_NUM_PROCESSES', '40'))
 
@@ -108,12 +108,12 @@ def get_status ():
   return '{"status":{"last_utc":"' + last_scan_UTC + '","last_time_sec":' + last_scan_total_sec + ',"last_count":' + str(last_scan_host_count) + '}}\n'
 
 # GET: (base URL)/json
-@restapi.route(REST_API_BASE_URL + '/json', methods=['GET'])
+@restapi.route('/' + REST_API_BASE_URL + '/json', methods=['GET'])
 def base_api ():
   return get_cache()
 
 # GET: (base URL)/status
-@restapi.route(REST_API_BASE_URL + '/status', methods=['GET'])
+@restapi.route('/' + REST_API_BASE_URL + '/status', methods=['GET'])
 def status_api ():
   return get_status()
 
@@ -133,7 +133,7 @@ def web_page ():
   return page
 
 # Prevent caching on all requests
-@webapp.after_request
+@restapi.after_request
 def add_header(r):
   r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
   r.headers["Pragma"] = "no-cache"
