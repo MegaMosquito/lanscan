@@ -35,6 +35,5 @@ WORKDIR /lanscan
 COPY ./lanscan.py /lanscan
 
 # Start up the daemon process
-#CMD python3 lanscan.py >/dev/null 2>&1
 CMD python3 lanscan.py
 
