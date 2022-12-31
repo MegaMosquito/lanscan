@@ -18,10 +18,10 @@
 #
 # Written by Glen Darling (mosquito@darlingevil.com), November 2022.
 #
-FROM ubuntu:latest
+FROM arm32v6/python:3-alpine
 
 # Install required stuff
-RUN apt update && apt install -y python3 python3-pip iputils-ping
+RUN apk --update --no-cache add iputils
 RUN pip3 install flask waitress
 
 # Setup a workspace directory
